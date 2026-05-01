@@ -1,7 +1,9 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import { useLanguage } from "../i18n/LanguageContext";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 function FeatureCard({
   feature,
@@ -18,35 +20,8 @@ function FeatureCard({
   };
   index: number;
 }) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = cardRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.15 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <div
-      ref={cardRef}
-      className="bg-white/[0.02] border border-white/5 rounded-2xl p-8 hover:bg-white/[0.04] hover:border-white/10 transition-colors duration-300"
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(32px)",
-        transition: `opacity 0.7s ease ${index * 0.15}s, transform 0.7s ease ${index * 0.15}s`,
-      }}
-    >
+    <div className="feature-card bg-white/[0.02] border border-white/5 rounded-2xl p-8 hover:bg-white/[0.04] hover:border-white/10 transition-colors duration-300 opacity-0 translate-y-8">
       {/* Tag + icon row */}
       <div className="flex items-center justify-between mb-6">
         <span className="text-white/20 font-mono text-xs tracking-widest font-body">
@@ -58,12 +33,12 @@ function FeatureCard({
       </div>
 
       {/* Title */}
-      <h3 className={`font-bold mb-1 text-2xl font-display ${feature.accent ? "text-accent" : "text-white"}`}>
+      <h3
+        className={`font-bold mb-1 text-2xl font-display ${feature.accent ? "text-accent" : "text-white"}`}
+      >
         {feature.title}
       </h3>
-      <p className="text-white/40 mb-4 text-xs font-body">
-        {feature.subtitle}
-      </p>
+      <p className="text-white/40 mb-4 text-xs font-body">{feature.subtitle}</p>
 
       {/* Description */}
       <p className="text-white/60 leading-relaxed mb-8 text-sm font-body">
@@ -89,6 +64,46 @@ function FeatureCard({
 
 export default function FeaturesSection() {
   const { d } = useLanguage();
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      // Header animation
+      gsap.fromTo(
+        ".features-header",
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+        },
+      );
+
+      // Cards stagger animation
+      gsap.to(".feature-card", {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        stagger: 0.15,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 70%",
+          toggleActions: "play none none reverse",
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   const featuresData = [
     {
@@ -96,10 +111,42 @@ export default function FeaturesSection() {
       tag: "01",
       icon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <rect x="3" y="3" width="8" height="8" rx="2" stroke="#5ed29c" strokeWidth="1.5" />
-          <rect x="13" y="3" width="8" height="8" rx="2" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" />
-          <rect x="3" y="13" width="8" height="8" rx="2" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" />
-          <rect x="13" y="13" width="8" height="8" rx="2" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" />
+          <rect
+            x="3"
+            y="3"
+            width="8"
+            height="8"
+            rx="2"
+            stroke="#5ed29c"
+            strokeWidth="1.5"
+          />
+          <rect
+            x="13"
+            y="3"
+            width="8"
+            height="8"
+            rx="2"
+            stroke="rgba(255,255,255,0.3)"
+            strokeWidth="1.5"
+          />
+          <rect
+            x="3"
+            y="13"
+            width="8"
+            height="8"
+            rx="2"
+            stroke="rgba(255,255,255,0.3)"
+            strokeWidth="1.5"
+          />
+          <rect
+            x="13"
+            y="13"
+            width="8"
+            height="8"
+            rx="2"
+            stroke="rgba(255,255,255,0.3)"
+            strokeWidth="1.5"
+          />
         </svg>
       ),
       title: d.features.sim.title,
@@ -116,9 +163,24 @@ export default function FeaturesSection() {
       tag: "02",
       icon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeLinejoin="round" />
-          <path d="M2 17L12 22L22 17" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeLinejoin="round" />
-          <path d="M2 12L12 17L22 12" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeLinejoin="round" />
+          <path
+            d="M12 2L2 7L12 12L22 7L12 2Z"
+            stroke="rgba(255,255,255,0.3)"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M2 17L12 22L22 17"
+            stroke="rgba(255,255,255,0.3)"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M2 12L12 17L22 12"
+            stroke="rgba(255,255,255,0.3)"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+          />
         </svg>
       ),
       title: d.features.boot.title,
@@ -135,8 +197,19 @@ export default function FeaturesSection() {
       tag: "03",
       icon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="9" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" />
-          <path d="M12 7V12L15 15" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeLinecap="round" />
+          <circle
+            cx="12"
+            cy="12"
+            r="9"
+            stroke="rgba(255,255,255,0.3)"
+            strokeWidth="1.5"
+          />
+          <path
+            d="M12 7V12L15 15"
+            stroke="rgba(255,255,255,0.3)"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
         </svg>
       ),
       title: d.features.courses.title,
@@ -153,12 +226,13 @@ export default function FeaturesSection() {
   return (
     <section
       id="features"
-      className="relative py-24 lg:py-32"
+      ref={sectionRef}
+      className="relative py-24 lg:py-28"
       aria-labelledby="features-heading"
     >
       <div className="w-full max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section header */}
-        <div className="mb-16 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+        <div className="features-header opacity-0 mb-16 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
           <div>
             <p className="text-accent font-bold uppercase tracking-widest mb-4 text-xs font-display">
               {d.features.eyebrow}

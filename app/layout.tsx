@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { LanguageProvider } from "./i18n/LanguageContext";
-
+import CustomCursor from "./components/CustomCursor";
 export const metadata: Metadata = {
   title: "CodeNest — Launch Your Coding Career",
   description:
@@ -40,6 +40,7 @@ export default function RootLayout({
   return (
     <html lang="es" className="h-full">
       <body className="min-h-full flex flex-col antialiased bg-bg-deep">
+        <CustomCursor />
         <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>

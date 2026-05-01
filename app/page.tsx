@@ -19,8 +19,8 @@ export default function Home() {
         <HeroSection />
         {/* <TrustBar /> */}
         <FeaturesSection />
-        {/* <StatsSection /> */}
-        {/* <TestimonialsSection /> */}
+        {/* <StatsSection />
+        <TestimonialsSection /> */}
         <CTASection />
       </main>
 

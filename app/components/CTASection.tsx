@@ -1,12 +1,13 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import { useLanguage } from "../i18n/LanguageContext";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function CTASection() {
   const ref = useRef<HTMLElement>(null);
-  const [visible, setVisible] = useState(false);
   const { d } = useLanguage();
 
   const tracks = [
@@ -45,26 +46,54 @@ export default function CTASection() {
   ];
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      // Left content stagger
+      gsap.fromTo(
+        ".cta-content-item",
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ref.current,
+            start: "top 75%",
+            toggleActions: "play none none reverse",
+          }
         }
-      },
-      { threshold: 0.15 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
+      );
+
+      // Right tracks stagger
+      gsap.fromTo(
+        ".cta-track-item",
+        { opacity: 0, x: 20 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.5,
+          stagger: 0.1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ref.current,
+            start: "top 70%",
+            toggleActions: "play none none reverse",
+          }
+        }
+      );
+    }, ref);
+
+    return () => ctx.revert();
   }, []);
 
   return (
     <section
       id="cta"
       ref={ref}
-      className="relative py-24 lg:py-32 overflow-hidden"
+      className="relative py-18 lg:py-22 overflow-hidden"
       aria-labelledby="cta-heading"
     >
       {/* Background ambient */}
@@ -90,19 +119,13 @@ export default function CTASection() {
       <div className="w-full max-w-7xl mx-auto px-6 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left: headline + CTA */}
-          <div
-            style={{
-              opacity: visible ? 1 : 0,
-              transform: visible ? "translateY(0)" : "translateY(32px)",
-              transition: "opacity 0.7s ease, transform 0.7s ease",
-            }}
-          >
-            <p className="text-accent font-bold uppercase tracking-widest mb-5 text-xs font-display">
+          <div>
+            <p className="cta-content-item text-accent font-bold uppercase tracking-widest mb-5 text-xs font-display opacity-0">
               {d.cta.eyebrow}
             </p>
             <h2
               id="cta-heading"
-              className="font-black uppercase text-white leading-none tracking-tight mb-6 text-4xl md:text-5xl lg:text-6xl font-body"
+              className="cta-content-item font-black uppercase text-white leading-none tracking-tight mb-6 text-4xl md:text-5xl lg:text-6xl font-body opacity-0"
             >
               {d.cta.headline1}
               <br />
@@ -110,11 +133,11 @@ export default function CTASection() {
               <br />
               {d.cta.headline3} <span className="text-accent">{d.cta.headlineAccent}</span>
             </h2>
-            <p className="text-white/55 leading-relaxed mb-10 max-w-md text-base font-body">
+            <p className="cta-content-item text-white/55 leading-relaxed mb-10 max-w-md text-base font-body opacity-0">
               {d.cta.description}
             </p>
 
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="cta-content-item flex flex-wrap items-center gap-4 opacity-0">
               <a
                 href="#"
                 id="cta-primary-button"
@@ -132,7 +155,7 @@ export default function CTASection() {
             </div>
 
             {/* Social proof */}
-            <div className="flex items-center gap-3 mt-8">
+            {/* <div className="cta-content-item flex items-center gap-3 mt-8 opacity-0">
               <div className="flex -space-x-2">
                 {["PN", "MW", "YT", "SO"].map((initials) => (
                   <div
@@ -151,29 +174,17 @@ export default function CTASection() {
                 <span className="text-white/70 font-semibold">{d.cta.socialProofCount}</span>{" "}
                 {d.cta.socialProofSuffix}
               </p>
-            </div>
+            </div> */}
           </div>
 
           {/* Right: track list */}
-          <div
-            className="flex flex-col gap-4"
-            style={{
-              opacity: visible ? 1 : 0,
-              transform: visible ? "translateY(0)" : "translateY(32px)",
-              transition: "opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s",
-            }}
-          >
-            {tracks.map((track, i) => (
+          <div className="flex flex-col gap-4">
+            {tracks.map((track) => (
               <a
                 key={track.id}
                 href="#"
                 id={`cta-track-${track.id}`}
-                className="group flex items-center justify-between p-5 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-accent/30 hover:bg-white/[0.04] transition-all duration-300"
-                style={{
-                  opacity: visible ? 1 : 0,
-                  transform: visible ? "translateX(0)" : "translateX(20px)",
-                  transition: `opacity 0.6s ease ${i * 0.1 + 0.3}s, transform 0.6s ease ${i * 0.1 + 0.3}s, border-color 0.3s ease, background 0.3s ease`,
-                }}
+                className="cta-track-item group flex items-center justify-between p-5 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-accent/30 hover:bg-white/[0.04] transition-all duration-300 opacity-0"
               >
                 <div className="flex items-center gap-4">
                   {/* Color dot */}
