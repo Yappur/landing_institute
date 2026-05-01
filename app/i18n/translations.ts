@@ -67,13 +67,16 @@ const translations = {
     stats: {
       heading: "CodeNest en números",
       graduatesLabel: "Graduados con Empleo",
-      graduatesDesc: "Estudiantes que completaron un programa y consiguieron roles",
+      graduatesDesc:
+        "Estudiantes que completaron un programa y consiguieron roles",
       hireLabel: "Tasa de Contratación",
       hireDesc: "De los graduados reciben una oferta dentro de los 90 días",
       salaryLabel: "Crecimiento Salarial",
-      salaryDesc: "Aumento promedio de salario frente a los ingresos pre-CodeNest",
+      salaryDesc:
+        "Aumento promedio de salario frente a los ingresos pre-CodeNest",
       mentorsLabel: "Mentores de la Industria",
-      mentorsDesc: "Ingenieros y líderes activos de FAANG y las mejores startups",
+      mentorsDesc:
+        "Ingenieros y líderes activos de FAANG y las mejores startups",
     },
     cta: {
       eyebrow: "Empieza Hoy",
@@ -192,7 +195,8 @@ const translations = {
     stats: {
       heading: "CodeNest em números",
       graduatesLabel: "Formandos Empregados",
-      graduatesDesc: "Estudantes que concluíram um programa completo e conseguiram vagas",
+      graduatesDesc:
+        "Estudantes que concluíram um programa completo e conseguiram vagas",
       hireLabel: "Taxa de Contratação",
       hireDesc: "Dos formandos recebem uma oferta dentro de 90 dias",
       salaryLabel: "Crescimento Salarial",
@@ -378,6 +382,6 @@ const translations = {
 } as const;
 
 export type Translations = typeof translations;
-export type LocaleDict = Translations["en"];
+export type LocaleDict = Translations[Locale];
 
 export default translations;

@@ -203,7 +203,7 @@ export default function AccentOrb() {
         // Spring physics for smooth return
         p.vx += (targetOx - p.ox) * 0.08; // spring tension
         p.vy += (targetOy - p.oy) * 0.08;
-        
+
         // Friction / Damping
         p.vx *= 0.82;
         p.vy *= 0.82;
@@ -213,7 +213,7 @@ export default function AccentOrb() {
 
         const x = baseX + p.ox;
         const y = baseY + p.oy;
-        
+
         const alpha = p.opacity * (0.6 + 0.4 * Math.sin(t * 2 + p.phase));
 
         ctx2d.beginPath();
@@ -226,8 +226,12 @@ export default function AccentOrb() {
 
         // Connecting lines occasionally
         if (Math.random() > 0.97) {
-          const tx = cx + Math.cos(p.angle + p.drift * 80) * r * 0.92 + p.ox * 0.5;
-          const ty = cy + Math.sin(p.angle + p.drift * 80) * r * 0.92 * 0.62 + p.oy * 0.5;
+          const tx =
+            cx + Math.cos(p.angle + p.drift * 80) * r * 0.92 + p.ox * 0.5;
+          const ty =
+            cy +
+            Math.sin(p.angle + p.drift * 80) * r * 0.92 * 0.62 +
+            p.oy * 0.5;
           ctx2d.beginPath();
           ctx2d.moveTo(x, y);
           ctx2d.lineTo(tx, ty);
@@ -305,8 +309,7 @@ export default function AccentOrb() {
             <div
               className="absolute inset-0 rounded-full"
               style={{
-                background:
-                  ""
+                background: "",
               }}
             />
 

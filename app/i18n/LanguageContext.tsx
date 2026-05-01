@@ -41,20 +41,31 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     d: translations[locale],
   };
 
-  // Prevent hydration mismatch by returning a loader or nothing on first render
-  // but for SEO and generic SSR it's better to just render with default language
-  // and accept potential text pop-in, or render as-is and just suppress hydration warning on root
+  // Prevent hydration mismatch by using mounted state
+  if (!mounted) {
+    return (
+      <LanguageContext.Provider
+        value={{
+          locale: "es",
+          setLocale: () => {},
+          d: translations.es,
+        }}
+      >
+        <div suppressHydrationWarning>{children}</div>
+      </LanguageContext.Provider>
+    );
+  }
+
   return (
     <LanguageContext.Provider value={value}>
-      <div style={{ visibility: mounted ? "visible" : "hidden", width: "100%", height: "100%" }}>
-         {children}
-      </div>
+      {children}
     </LanguageContext.Provider>
   );
 }
 
 export function useLanguage(): LanguageContextValue {
   const ctx = useContext(LanguageContext);
-  if (!ctx) throw new Error("useLanguage must be used inside <LanguageProvider>");
+  if (!ctx)
+    throw new Error("useLanguage must be used inside <LanguageProvider>");
   return ctx;
 }
